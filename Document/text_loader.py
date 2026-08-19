@@ -1,0 +1,5 @@
+from langchain_community.document_loaders import TextLoader
+
+loader=TextLoader('file.txt')
+docs=loader.load()
+print(docs)

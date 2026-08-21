@@ -26,6 +26,7 @@ embeddings = HuggingFaceEmbeddings(
 
 # 2. Create vector store and store embeddings
 vector_store = Chroma.from_documents(
+    documents=docs,
     embedding=embeddings,
     collection_name="rag_collection",
     persist_directory="./chroma_db"

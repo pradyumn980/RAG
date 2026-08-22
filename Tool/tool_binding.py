@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 from langchain_core.tools import tool
 from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
-
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 load_dotenv()
 
 print("Token loaded:", bool(os.getenv("HUGGINGFACEHUB_API_TOKEN")))
@@ -34,9 +34,24 @@ tools = [multiply, add]
 
 model_with_tools = model.bind_tools(tools)
 
-#using the model with tools
-response = model_with_tools.invoke(
-    "What is 15 multiplied by 20?"
-)
+query=HumanMessage(content="can you multiply 3 and 4, and then add 5 to the result?")
 
-print(response.content)
+messages=[query]
+#using the model with tools
+response = model_with_tools.invoke(messages)
+
+
+messages.append(response)
+
+
+#tool execution
+response.tool_calls[0]
+multiply_result = multiply.invoke({'name': 'multiply', 'args': {'a': 3, 'b': 4}, 'id': 'call_Y63eVkLU4FMy3DfQ1UciBpT3', 'type': 'tool_call'})
+#print(ans)
+
+messages.append(multiply_result)
+print(messages)
+
+#print(f"Multiply Result: {multiply_result}")
+
+#response back to LLM
